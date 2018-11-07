@@ -1,5 +1,6 @@
 package au.com.oceanbug.cloud.oceanbug;
 //set PATH="D:\Trudi\Dev\apache-maven-3.6.0\bin";%PATH%
+//mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
 import au.com.oceanbug.cloud.oceanbug.service.SheetsService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

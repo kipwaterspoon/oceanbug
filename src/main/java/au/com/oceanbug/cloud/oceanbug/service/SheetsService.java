@@ -27,44 +27,34 @@ public class SheetsService {
         String result = null;
         try {
             root = mapper.readTree(response.getBody());
-            result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
+            //result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        walkTree(root);
-
-        return result;
+        return walkTree(root);
     }
 
-    public void walkTree(JsonNode root)
+    public String walkTree(JsonNode root)
     {
-        List<String> headers = new ArrayList<>();
+        String result = "";
+
         JsonNode rootNode = readObject(root);
 
-        ArrayList<JsonNode> rootArray = readArray(rootNode);
+        Iterator<JsonNode> arraysUnderRoot = rootNode.elements();
 
-        System.out.println("rootArray = " + rootArray.size());
+        while (arraysUnderRoot.hasNext()) {
+            JsonNode nextArrayUnderRoot = arraysUnderRoot.next();
+            result = result + "\n" + nextArrayUnderRoot.toString();
 
-        ArrayList<JsonNode> rowArray = null;
-
-        boolean firstRow = true;
-        for (JsonNode jsonNode : rootArray) {
-            rowArray = readArray(jsonNode);
-
-            for (int i = 0; i < rowArray.size(); i++) {
-                JsonNode rowData = rowArray.get(i);
-                if(i == 0)
-                    readValues(rowData, headers);
-//                else
-//                    readValues(rowData, headers);
-            }
-
+//            Iterator<JsonNode> valuesInArray = nextArrayUnderRoot.elements();
+//            while (valuesInArray.hasNext()) {
+//                JsonNode nextValueInArray = valuesInArray.next();
+//                System.out.println(readValue(nextValueInArray));
+//            }
         }
 
-        for (String header : headers) {
-            System.out.println("header = " + header);
-        }
+        return result;
     }
 
     private JsonNode readObject(JsonNode node)
@@ -75,35 +65,11 @@ public class SheetsService {
                 Map.Entry<String, JsonNode> next =  iterator.next();
 
                 String name = next.getKey();
-                JsonNode newNode = next.getValue();
 
                 if("values".equalsIgnoreCase(name))
-                    return newNode;
+                    return next.getValue();;
             }
         }
-
-        return null;
-    }
-
-    private ArrayList<JsonNode> readArray(JsonNode node) {
-        if (node.isArray()) {
-            Iterator<JsonNode> arrayItemsIterator = node.elements();
-            return Lists.newArrayList(arrayItemsIterator);
-        }
-
-        return null;
-    }
-
-    private void readValues(JsonNode node, List<String> values) {
-        ArrayList<JsonNode> nodeValues = readArray((node));
-        for (JsonNode nodeValue : nodeValues) {
-            values.add(readValue(nodeValue));
-        }
-    }
-
-    private String readValue(JsonNode node) {
-        if (node.isValueNode())
-           return node.asText();
 
         return null;
     }

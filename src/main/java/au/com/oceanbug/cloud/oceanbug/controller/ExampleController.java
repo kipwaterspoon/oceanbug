@@ -13,11 +13,5 @@ public class ExampleController {
     @RequestMapping("/")
     String home() {
         return service.readSheet();
-        //return "Hello World!!!";
     }
-
-//    public static void main(String[] args) throws Exception {
-//        SpringApplication.run(ExampleController.class, args);
-//    }
-
 }
